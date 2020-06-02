@@ -26,6 +26,24 @@ exports.up = function(knex, Promise) {
         tbl.string('notes')
         tbl.boolean('completed').defaultTo('false')
       })
+      .createTable('resources_per_project', tbl => {
+        // creates a primary key called id
+        tbl.increments();
+        tbl.integer('project_id')
+        .unsigned()
+        .notNullable()
+        .references('id')
+// this table must exist already
+        .inTable('projects')
+        tbl.integer('resource_id')
+        .unsigned()
+        .notNullable()
+        .references('id')
+// this table must exist already
+        .inTable('resources')
+        tbl.boolean('completed').defaultTo('false')
+
+      })
   };
   
   exports.down = function(knex, Promise) {
@@ -33,4 +51,5 @@ exports.up = function(knex, Promise) {
     return knex.schema.dropTableIfExists('tasks')
     .dropTableIfExists('projects')
     .dropTableIfExists('resources')
+    .dropTableIfExists('resources_per_project')
   };
